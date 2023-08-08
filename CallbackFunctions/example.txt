@@ -1,0 +1,1 @@
+So, basically the file content is read first and the callback function is executed only after the reading is complete.
