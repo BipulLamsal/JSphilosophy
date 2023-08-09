@@ -20,7 +20,7 @@ try {
 async function writeContent() {
   try {
     content = "I updated this!";
-    await fsp.writeFile("__tests__/test2.txt", content);
+    await fsp.appendFile("__tests__/test2.txt",content); // adding the text to the end of a file. 
     console.log("File written succesfully.");
   } catch (err) {
     console.error(err);
