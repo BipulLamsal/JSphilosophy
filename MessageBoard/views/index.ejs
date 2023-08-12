@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link rel="stylesheet" href="/stylesheets/tailwind.css" />
+  </head>
+  <body>
+    <div class="Header">Welcome To <%= title %></div>
+    <div class="MessageContainer">
+      <% content.map((item) => { %>
+        <div class="Message">
+          <div class="Content"><%=item.text%></div>
+          <div class="Description">
+            <p class="Author"><%= item.user %></p>
+            <p class="Date"><%= item.added %></p>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    <div class="Footer">
+      <form method="POST" action="/">
+        <input type="text" placeholder="Enter Your <%=title.split(' ')[1]%>" name="input_message">
+        <input type="text" placeholder="Enter Username" name="input_user">
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+  </body>
+</html>
