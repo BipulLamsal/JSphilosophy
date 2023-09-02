@@ -44,7 +44,6 @@ interface newPostObjType<T> {
   extra?: T[];
 }
 
-
 const newPost: newPostObjType<categoryObjType> = {
   id: 1,
   title: "New post",
@@ -52,5 +51,61 @@ const newPost: newPostObjType<categoryObjType> = {
   extra: [{ id: 1, title: "Random" }],
 };
 
+//generic constraints
 
-    
+interface AnimalType {
+  name: string;
+  age: number;
+}
+
+function getOlderAnimal<T extends AnimalType>(animal1: T, animal2: T): T {
+  return animal1.age > animal2.age ? animal1 : animal2;
+}
+
+getOlderAnimal({ name: "Husky", age: 12 }, { name: "Wishky", age: 8 });
+
+interface Person {
+  name: string;
+  age: number;
+  address: string;
+}
+
+type PersonKeys = keyof Person;
+
+function getPersonProperty<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key];
+}
+
+function getFirstElement<T>(arr: T[]): T | undefined {
+  return arr[0];
+}
+
+// Test cases
+const stringArray = ["apple", "banana", "cherry"];
+const numberArray = [1, 2, 3, 4, 5];
+const booleanArray = [true, false];
+const objectArray = [{ name: "Alice" }, { name: "Bob" }];
+
+const firstString = getFirstElement(stringArray); // Expected: "apple"
+const firstNumber = getFirstElement(numberArray); // Expected: 1
+const firstBoolean = getFirstElement(booleanArray); // Expected: true
+const firstObject = getFirstElement(objectArray); // Expected: { name: "Alice" }
+
+// T[K] is the accessing the object with the key K and T[K] [] is making the array of that type
+function pluck<T, K extends keyof T>(arr: T[], key: K): T[K][] {
+  let newArr: T[K][] = [];
+  for (let i: number = 0; i < arr.length; i++) {
+    newArr.push(arr[i][key]);
+  }
+  return newArr;
+}
+
+// Test case
+const people = [
+  { name: "Alice", age: 30 },
+  { name: "Bob", age: 25 },
+  { name: "Charlie", age: 28 },
+];
+
+const names = pluck(people, "name"); // Expected: ["Alice", "Bob", "Charlie"]
+const ages = pluck(people, "age"); // Expected: [30, 25, 28]
