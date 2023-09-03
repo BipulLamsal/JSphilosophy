@@ -6,6 +6,7 @@ const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const catalogRouter = require('./routes/catalog');
 
 const app = express();
 
@@ -13,7 +14,11 @@ const app = express();
 const mongoose = require('mongoose');
 mongoose.set("strictQuery",false);
 const mongoDB = "mongodb+srv://bl03231622:HUBjuT2Ie1gt92nN@cluster0.9jb1yd0.mongodb.net/?retryWrites=true&w=majority"
-main().catch((err)=>{console.log(err)})
+main()
+.then(()=>{
+  console.log("db connected");
+})
+.catch((err)=>{console.log(err)})
 async function main()
 {
 await mongoose.connect(mongoDB);
@@ -30,6 +35,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/catalog',catalogRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
