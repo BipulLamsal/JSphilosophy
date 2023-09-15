@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Socket.IO chat</title>
+    <style>
+      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+      #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+      #input:focus { outline: none; }
+      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages > li { padding: 0.5rem 1rem; }
+      #messages > li:nth-child(odd) { background: #efefef; }
+    </style>
+  </head>
+  <body>
+    <body>
+      <h1>Which Langauge do you like most ?</h1>
+      <div id="poll-options">
+      </div>
+      <button id="vote-button">Vote</button>
+      <div id="results">
+        <h2>Results:</h2>
+        <div id="option-0">Option A: 0 votes</div>
+        <div id="option-1">Option B: 0 votes</div>
+        <div id="option-2">Option C: 0 votes</div>
+        <div id="option-3">Option D: 0 votes</div>
+
+
+      </div>
+      <script src="socket.io/socket.io.js"></script>
+      <script>
+
+
+// Initialize Socket.IO client
+const socket = io();
+
+// Function to update the poll options in the DOM
+function updatePollOptions(options) {
+  const pollOptionsElement = document.getElementById('poll-options');
+  pollOptionsElement.innerHTML = '';
+
+  options.forEach((option) => {
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'option';
+    input.value = option.id;
+
+    const text = document.createTextNode(option.name);
+
+    label.appendChild(input);
+    label.appendChild(text);
+
+    pollOptionsElement.appendChild(label);
+  });
+}
+
+// Function to update the vote counts in the DOM
+function updateVoteCounts(results) {
+  results.forEach((result) => {
+    const element = document.getElementById(`option-${result.id}`);
+    if (element) {
+      element.textContent = `${result.name}: ${result.clicks} votes`;
+    }
+  });
+}
+
+// Listen for poll options from the server
+socket.on('pollOptions', (options) => {
+  updatePollOptions(options);
+});
+
+// Handle voting when the "Vote" button is clicked
+document.getElementById('vote-button').addEventListener('click', () => {
+  const selectedOption = document.querySelector('input[name="option"]:checked');
+  if (selectedOption) {
+    const optionId = selectedOption.value;
+    socket.emit('vote', optionId); // Emit a 'vote' event with the selected option ID
+  }
+});
+
+// Listen for updated results from the server
+socket.on('results', (results) => {
+  updateVoteCounts(results);
+});
+
+        // // Initialize Socket.IO client
+        // const socket = io();
+      
+        // // Populate options
+        // let pollOptions = [
+        //   {
+        //     id: 0,
+        //     name: 'Javascript',
+        //     clicks: 0
+        //   },
+        //   {
+        //     id: 1,
+        //     name: 'Python',
+        //     clicks: 0
+        //   },
+        //   {
+        //     id: 2,
+        //     name: 'C++',
+        //     clicks: 0
+        //   },
+        //   {
+        //     id: 3,
+        //     name: 'Clojure',
+        //     clicks: 0
+        //   },
+        // ];
+        // const domPollOptions = document.getElementById("poll-options");
+        // pollOptions.forEach((option) => {
+        //   const label = document.createElement('label');
+        //   const input = document.createElement('input');
+        //   input.type = 'radio';
+        //   input.name = 'option';
+        //   input.value = option.id;
+        //   const text = document.createTextNode(option.name);
+        //   label.appendChild(input);
+        //   label.appendChild(text);
+        //   domPollOptions.appendChild(label);
+        // });
+      
+        // // Handle voting when the "Vote" button is clicked
+        // document.getElementById('vote-button').addEventListener('click', () => {
+        //   const selectedOption = document.querySelector('input[name="option"]:checked');
+        //   if (selectedOption) {
+        //     const optionId = parseInt(selectedOption.value);
+        //     pollOptions = pollOptions.map((item) => {
+        //       if (item.id === optionId) {
+        //         return { ...item, clicks: item.clicks   + 1 };
+        //       }
+        //       return item;
+        //     });
+        //     const option = optionId.toString();
+        //     socket.emit('vote', option);
+        //   }
+        // });
+      
+        // // Listen for updated results from the server
+        // socket.on('results', (result) => {
+        //   const element = document.getElementById("option-" + result);
+        //   const objectData = pollOptions.find((item) => item.id === result);
+        //   console.log(objectData)
+        //   if (element && objectData) {
+        //     element.textContent = `${objectData.name}: ${objectData.clicks} votes`;
+        //   }
+        // });
+      </script>
+      
+  </body>
+
+</html>
